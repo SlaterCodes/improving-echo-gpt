@@ -14,6 +14,11 @@ from backend.history.cosmosdbservice import CosmosConversationClient
 
 load_dotenv()
 
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+#from opentelemetry.sdk.trace import TracerProvider
+
+
 app = Flask(__name__, static_folder="static")
 
 # Static Files
@@ -40,6 +45,8 @@ DATASOURCE_TYPE = os.environ.get("DATASOURCE_TYPE", "AzureCognitiveSearch")
 SEARCH_TOP_K = os.environ.get("SEARCH_TOP_K", 5)
 SEARCH_STRICTNESS = os.environ.get("SEARCH_STRICTNESS", 3)
 SEARCH_ENABLE_IN_DOMAIN = os.environ.get("SEARCH_ENABLE_IN_DOMAIN", "true")
+
+AZURE_APP_INSIGHTS = os.environ.get("AZURE_APP_INSIGHTS")
 
 # ACS Integration Settings
 AZURE_SEARCH_SERVICE = os.environ.get("AZURE_SEARCH_SERVICE")
@@ -112,6 +119,14 @@ ELASTICSEARCH_URL_COLUMN = os.environ.get("ELASTICSEARCH_URL_COLUMN")
 ELASTICSEARCH_VECTOR_COLUMNS = os.environ.get("ELASTICSEARCH_VECTOR_COLUMNS")
 ELASTICSEARCH_STRICTNESS = os.environ.get("ELASTICSEARCH_STRICTNESS", SEARCH_STRICTNESS)
 ELASTICSEARCH_EMBEDDING_MODEL_ID = os.environ.get("ELASTICSEARCH_EMBEDDING_MODEL_ID")
+
+appinsights_client = None
+if AZURE_APP_INSIGHTS:
+    configure_azure_monitor(connection_string = AZURE_APP_INSIGHTS,
+                            instrumentation_options = {
+                                "flask":{"enabled":True}
+                            })
+    FlaskInstrumentor().instrument_app(app)
 
 # Initialize a CosmosDB client with AAD auth and containers for Chat History
 cosmos_conversation_client = None
