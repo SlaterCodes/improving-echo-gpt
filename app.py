@@ -15,7 +15,7 @@ from backend.history.cosmosdbservice import CosmosConversationClient
 load_dotenv()
 
 from azure.monitor.opentelemetry import configure_azure_monitor
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
+#from opentelemetry.instrumentation.flask import FlaskInstrumentor
 #from opentelemetry.sdk.trace import TracerProvider
 
 
@@ -126,7 +126,7 @@ if AZURE_APP_INSIGHTS:
                             instrumentation_options = {
                                 "flask":{"enabled":True}
                             })
-    FlaskInstrumentor().instrument_app(app)
+#    FlaskInstrumentor().instrument_app(app)
 
 # Initialize a CosmosDB client with AAD auth and containers for Chat History
 cosmos_conversation_client = None

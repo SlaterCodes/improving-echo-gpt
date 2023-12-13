@@ -8,4 +8,4 @@ azure-cosmos==4.5.0
 
 
 azure-monitor-opentelemetry
-opentelemetry-instrumentation-flask
+#opentelemetry-instrumentation-flask
